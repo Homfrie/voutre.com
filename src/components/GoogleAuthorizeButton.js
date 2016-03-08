@@ -1,17 +1,13 @@
 import React, { Component, PropTypes } from 'react';
+import Button from './common/Button';
+import classNames from 'classnames/bind';
 
-class GoogleAuthorizeButton extends Component {
-  static propTypes = {
-    onGoogleAuthorize: PropTypes.func.isRequired
-  };
+const GoogleAuthorizeButton = ({onClick}) => {
+  return <Button onClick={onClick}>Sign-in</Button>;
+};
 
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return <button onClick={this.props.onGoogleAuthorize}>Sign-in</button>;
-  }
-}
+GoogleAuthorizeButton.propTypes = {
+  onClick: PropTypes.func.isRequired
+};
 
 export default GoogleAuthorizeButton;

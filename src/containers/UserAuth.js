@@ -37,7 +37,7 @@ class UserAuthContainer extends Component {
       <div>
         {this.state.isSignedIn ? 
           <DocumentSearchContainer /> : 
-          <GoogleAuthorizeButton onGoogleAuthorize={this.onGoogleAuthorize.bind(this)}/>}
+          <GoogleAuthorizeButton onClick={this.onGoogleAuthorize.bind(this)}/>}
       </div>
     );
   }

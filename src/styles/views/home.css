@@ -1,0 +1,18 @@
+@import "../components/header.css";
+@import "../components/grid.css";
+
+.home {
+  flex: 1;
+  justify-content: 'center';
+  align-items: 'center';
+}
+.leadin {
+  font-size: 2em; 
+  font-family: 'Calluna';
+  font-weight: 400;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}

@@ -1,86 +1,233 @@
-// For info about this file refer to webpack and webpack-hot-middleware documentation
-// Rather than having hard coded webpack.config.js for each environment, this
-// file generates a webpack config for the environment passed to the getConfig method.
 import webpack from 'webpack';
+import cssnano from 'cssnano';
 import path from 'path';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import autoprefixer from 'autoprefixer';
+import argv from 'argv';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import postcssImport from 'postcss-import';
 
 
-const developmentEnvironment = 'development' ;
-const productionEnvironment = 'production';
-const testEnvironment = 'test';
+const CLIENT_PATH = __dirname + '/src';
+const DIST_PATH = __dirname + '/public';
+const COMPILER_PUBLIC_PATH = 'http://localhost:3005/';
+const ENV = process.env.NODE_ENV || 'development';
+const COMPILER_VENDOR = [
+  'history',
+  'react',
+  'react-router'
+];
 
-const getPlugins = function (env) {
-  const GLOBALS = {
-    'process.env.NODE_ENV': JSON.stringify(env),
-    __DEV__: env === developmentEnvironment
-  };
-
-  const plugins = [
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.DefinePlugin(GLOBALS) //Tells React to build in prod mode. https://facebook.github.io/react/downloads.html
-  ];
-
-  switch (env) {
-    case productionEnvironment:
-      plugins.push(new ExtractTextPlugin('styles.css'));
-      plugins.push(new webpack.optimize.DedupePlugin());
-      plugins.push(new webpack.optimize.UglifyJsPlugin());
-      break;
-
-    case developmentEnvironment:
-      plugins.push(new webpack.HotModuleReplacementPlugin());
-      plugins.push(new webpack.NoErrorsPlugin());
-      break;
-  }
-
-  return plugins;
+const webpackConfig = {
+  name: 'client',
+  target: 'web',
+  browser: 'google chrome',
+  resolve: {
+    root: CLIENT_PATH,
+    extensions: ['', '.js', '.jsx', '.json']
+  },
+  module: {}
+};
+// ------------------------------------
+// Entry Points
+// ------------------------------------
+const APP_ENTRY_PATH = `${CLIENT_PATH}/index`;
+webpackConfig.entry = {
+  app: [APP_ENTRY_PATH, `webpack-hot-middleware/client?path=${COMPILER_PUBLIC_PATH}__webpack_hmr`],
+  vendor: COMPILER_VENDOR
 };
 
-const getEntry = function (env) {
-  const entry = [];
-
-  if (env === developmentEnvironment ) { // only want hot reloading when in dev.
-    entry.push('webpack-hot-middleware/client');
-  }
-
-  entry.push('./src/index');
-
-  return entry;
+// ------------------------------------
+// Bundle Output
+// ------------------------------------
+webpackConfig.output = {
+  filename: `[name].[hash].js`,
+  path: DIST_PATH,
+  publicPath: COMPILER_PUBLIC_PATH
 };
 
-const getLoaders = function (env) {
-  const loaders = [{ test: /\.js$/, include: path.join(__dirname, 'src'), loaders: ['babel', 'eslint'] }];
-
-  if (env === productionEnvironment ) {
-    // generate separate physical stylesheet for production build using ExtractTextPlugin. This provides separate caching and avoids a flash of unstyled content on load.
-    loaders.push({test: /(\.css)$/, loader: ExtractTextPlugin.extract("css?sourceMap")});
-  } else {
-    loaders.push({test: /(\.css)$/, loader: "style-loader!css-loader!postcss-loader"});
-  }
-
-  return loaders;
-};
-
-function getConfig(env) {
-  return {
-    debug: true,
-    devtool: env === productionEnvironment  ? 'source-map' : 'cheap-module-eval-source-map', // more info:https://webpack.github.io/docs/build-performance.html#sourcemaps and https://webpack.github.io/docs/configuration.html#devtool
-    noInfo: true, // set to false to see a list of every file being bundled.
-    entry: getEntry(env),
-    target: env === testEnvironment ? 'node' : 'web', // necessary per https://webpack.github.io/docs/testing.html#compile-and-test
-    output: {
-      path: __dirname + '/dist', // Note: Physical files are only output by the production build task `npm run build`.
-      publicPath: '',
-      filename: 'bundle.js'
+// ------------------------------------
+// Plugins
+// ------------------------------------
+webpackConfig.plugins = [
+  new webpack.DefinePlugin({
+    'process.env'  : {
+      'NODE_ENV' : JSON.stringify(ENV)
     },
-    plugins: getPlugins(env),
-    module: {
-      loaders: getLoaders(env)
-    },
-    postcss: [autoprefixer]
-  };
+    'NODE_ENV'     : ENV,
+    '__DEV__'      : ENV === 'development',
+    '__PROD__'     : ENV === 'production',
+    '__TEST__'     : ENV === 'test',
+    '__DEBUG__'    : ENV === 'development' && !argv.no_debug,
+    '__DEBUG_NEW_WINDOW__' : !!argv.nw,
+    '__BASENAME__' : JSON.stringify(process.env.BASENAME || '')
+  }),
+  new HtmlWebpackPlugin({
+    template: `${CLIENT_PATH}/index.html`,
+    hash: false,
+    filename: 'index.html',
+    inject: 'body',
+    minify: {
+      collapseWhitespace: true
+    }
+  })
+];
+
+//Dev plugins
+webpackConfig.plugins.push(
+  new webpack.HotModuleReplacementPlugin(),
+  new webpack.NoErrorsPlugin()
+);
+
+// ------------------------------------
+// Pre-Loaders
+// ------------------------------------
+webpackConfig.module.preLoaders = [{
+  test: /\.(js|jsx)$/,
+  loader: 'eslint',
+  exclude: /node_modules/
+}];
+
+webpackConfig.eslint = {
+  configFile: '.eslintrc',
+  emitWarning: ENV == 'development'
+};
+
+// ------------------------------------
+// Loaders
+// ------------------------------------
+// JavaScript / JSON
+webpackConfig.module.loaders = [{
+  test: /\.(js|jsx)$/,
+  exclude: /node_modules/,
+  loader: 'babel',
+  query: {
+    cacheDirectory: true,
+    plugins: ['transform-runtime'],
+    presets: ['es2015', 'react', 'stage-0'],
+    env: {
+      development: {
+        plugins: [
+          ['react-transform', {
+            transforms: [{
+              transform: 'react-transform-hmr',
+              imports: ['react'],
+              locals: ['module']
+            }, {
+              transform: 'react-transform-catch-errors',
+              imports: ['react', 'redbox-react']
+            }]
+          }]
+        ]
+      },
+      production: {
+        plugins: [
+          'transform-react-remove-prop-types',
+          'transform-react-constant-elements'
+        ]
+      }
+    }
+  }
+},
+{
+  test: /\.json$/,
+  loader: 'json'
+}];
+
+// ------------------------------------
+// Style Loaders
+// ------------------------------------
+// We use cssnano with the postcss loader, so we tell
+// css-loader not to duplicate minimization.
+const BASE_CSS_LOADER = 'css?sourceMap&-minimize'
+
+// Add any packge names here whose styles need to be treated as CSS modules.
+// These paths will be combined into a single regex.
+const PATHS_TO_TREAT_AS_CSS_MODULES = [
+  // 'react-toolbox', (example)
+];
+
+PATHS_TO_TREAT_AS_CSS_MODULES.push(
+  CLIENT_PATH.replace(/[\^\$\.\*\+\-\?\=\!\:\|\\\/\(\)\[\]\{\}\,]/g, '\\$&')
+);
+
+const isUsingCSSModules = !!PATHS_TO_TREAT_AS_CSS_MODULES.length
+const cssModulesRegex = new RegExp(`(${PATHS_TO_TREAT_AS_CSS_MODULES.join('|')})`)
+
+// Loaders for styles that need to be treated as CSS modules.
+if (isUsingCSSModules) {
+  const cssModulesLoader = [
+    BASE_CSS_LOADER,
+    'modules',
+    'importLoaders=1',
+    'localIdentName=[name]__[local]___[hash:base64:5]'
+  ].join('&')
+
+  webpackConfig.module.loaders.push({
+    test: /\.css$/,
+    include: cssModulesRegex,
+    loaders: [
+      'style',
+      cssModulesLoader,
+      'postcss'
+    ]
+  });
 }
 
-export default getConfig;
+// Loaders for files that should not be treated as CSS modules.
+const excludeCSSModules = isUsingCSSModules ? cssModulesRegex : false;
+webpackConfig.module.loaders.push({
+  test: /\.scss$/,
+  exclude: excludeCSSModules,
+  loaders: [
+    'style',
+    BASE_CSS_LOADER,
+    'postcss',
+    'sass?sourceMap'
+  ]
+});
+
+webpackConfig.module.loaders.push({
+  test: /\.css$/,
+  exclude: excludeCSSModules,
+  loaders: [
+    'style',
+    BASE_CSS_LOADER,
+    'postcss'
+  ]
+});
+
+// ------------------------------------
+// Style Configuration
+// ------------------------------------
+webpackConfig.postcss = function(webpack) {
+  return [
+    postcssImport({ addDependencyTo: webpack }),
+    cssnano({
+      autoprefixer: {
+        add: true,
+        remove: true,
+        browsers: ['last 2 versions']
+      },
+      discardComments: {
+        removeAll: true
+      },
+      safe: true,
+      sourcemap: true
+    })
+  ]
+};
+
+// File loaders
+/* eslint-disable */
+/*
+webpackConfig.module.loaders.push(
+  { test: /\.woff(\?.*)?$/,  loader: 'url?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=application/font-woff' },
+  { test: /\.woff2(\?.*)?$/, loader: 'url?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=application/font-woff2' },
+  { test: /\.otf(\?.*)?$/,   loader: 'file?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=font/opentype' },
+  { test: /\.ttf(\?.*)?$/,   loader: 'url?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=application/octet-stream' },
+  { test: /\.eot(\?.*)?$/,   loader: 'file?prefix=fonts/&name=[path][name].[ext]' },
+  { test: /\.svg(\?.*)?$/,   loader: 'url?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=image/svg+xml' },
+  { test: /\.(png|jpg)$/,    loader: 'url?limit=8192' }
+);
+*/
+
+export default webpackConfig;

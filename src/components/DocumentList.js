@@ -1,25 +1,24 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import GoogleClient from '../lib/google-client';
+import List from './common/List';
 import DocumentItem from './DocumentItem';
 
-class DocumentList extends Component {
-  static propTypes = {
-    onSelect: PropTypes.func.isRequired,
-    data: PropTypes.array.isRequired
-  }
-  render() {
-    const documentItems = this.props.data.map(document => {
-      return (
-        <DocumentItem key={document.id} onSelect={this.props.onSelect} data={document} />
-      );
-    });
+const DocumentList = ({data, onSelect}) => {
+  const documentItems = data.map(document => {
     return (
-      <div>
-        {documentItems}
-      </div>
+      <DocumentItem key={document.id} onClick={onSelect} data={document} />
     );
-    //<DocumentList data={this.state.data} />;
-  }
-}
+  });
+  return (
+    <List>
+    {documentItems}
+    </List>
+  );
+};
+
+DocumentList.propTypes = {
+  onSelect: PropTypes.func.isRequired,
+  data: PropTypes.array.isRequired
+};
 
 export default DocumentList;

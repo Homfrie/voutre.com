@@ -1,8 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import GoogleClient from '../lib/google-client';
 import DocumentList from '../components/DocumentList';
-import DebounceInput from 'react-debounce-input';
-
+import Input from '../components/common/Input';
 
 class DocumentSearchContainer extends Component {
   constructor(props) {
@@ -41,10 +40,7 @@ class DocumentSearchContainer extends Component {
   render() {
     return (
       <div>
-        <DebounceInput
-          minLength={2}
-          debounceTimeout={300}
-          onChange={e => this.setState({searchQuery: e.target.value})} />
+        <Input onChange={e => this.setState({searchQuery: e.target.value})}/>
         <DocumentList onSelect={this.onDocumentSelect} data={this.state.data}/>
       </div>
     );

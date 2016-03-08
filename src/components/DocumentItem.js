@@ -1,14 +1,18 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
+import Button from './common/Button';
+import Item from './common/Item';
 
-class DocumentItem extends Component {
-  static propTypes = {
-    onSelect: PropTypes.func.isRequired,
-    data: React.PropTypes.object.isRequired
-  };
+const DocumentItem = ({data, onClick}) => {
+  return (
+    <Item>
+      <Button onClick={onClick}>{data.name}</Button>
+    </Item>
+  );
+};
 
-  render() {
-    return <button onClick={this.props.onSelect}>{this.props.data.name}</button>;
-  }
-}
+DocumentItem.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  data: React.PropTypes.object.isRequired
+};
 
 export default DocumentItem;
