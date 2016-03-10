@@ -28,7 +28,7 @@ browserSync({
         stats: { colors: true },
 
         // Set to false to display a list of each file that is being bundled.
-        noInfo: true
+        noInfo: false
 
         // for other settings see
         // http://webpack.github.io/docs/webpack-dev-middleware.html

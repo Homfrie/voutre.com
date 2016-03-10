@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router';
-import UserAuthContainer from '../containers/UserAuth';
-import Grid from '../components/common/Grid';
+import UserAuthContainer from '../../containers/UserAuth';
+import Grid from '../common/Grid';
 
 import classNames from 'classnames/bind';
-import styles from '../styles/views/home.css';
+import styles from '../../styles/views/home.css';
 const cx = classNames.bind(styles);
 
-const Home = () => {
+const HomeView = () => {
   const containerClass = cx({
     ui: true, 
     vertical: true, 
@@ -45,4 +45,4 @@ const Home = () => {
 };
 //test
 
-export default Home;
+export default HomeView;

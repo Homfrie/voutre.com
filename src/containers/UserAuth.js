@@ -1,41 +1,22 @@
 import React, { Component, PropTypes } from 'react';
+import {connect} from 'react-redux';
 import GoogleAuthorizeButton from '../components/GoogleAuthorizeButton';
+import {googleUserAuthorizeStart} from '../actions';
 import DocumentSearchContainer from './DocumentSearch';
 import GoogleClient from '../lib/google-client';
 
 class UserAuthContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { 
-      isSignedIn: false,
-      documents: null,
-      nextPageToken: null
-    };
-    this.gapi = new GoogleClient();
-  }
-  componentDidMount( ){
-    this.gapi.load(this.onLoadGAPI.bind(this));
-  }
-  onLoadGAPI( ) {
-    this.gapi.authorize(this.onAuthSuccess.bind(this), 
-                        this.onAuthFailure.bind(this), 
-                        true);
-  }
-  onAuthSuccess( e ) {
-    this.setState({isSignedIn: true});
-  }
-  onAuthFailure( ) {
-    this.setState({isSignedIn: false});
+  static propTypes = {
+    login: PropTypes.func.isRequired,
+    isSignedIn: PropTypes.bool.isRequired
   }
   onGoogleAuthorize( ) {
-    this.gapi.authorize(this.onAuthSuccess.bind(this), 
-                        this.onAuthFailure.bind(this),
-                        false);
+    this.props.login( );
   }
   render() {
     return (
       <div>
-        {this.state.isSignedIn ? 
+        {this.props.isSignedIn ? 
           <DocumentSearchContainer /> : 
           <GoogleAuthorizeButton onClick={this.onGoogleAuthorize.bind(this)}/>}
       </div>
@@ -43,4 +24,10 @@ class UserAuthContainer extends Component {
   }
 }
 
-export default UserAuthContainer;
+const mapStateToProps = state => ({
+  isSignedIn: state.getIn(['auth', 'isSignedIn'])
+});
+
+export default connect(mapStateToProps, {
+ login: googleUserAuthorizeStart 
+})(UserAuthContainer);

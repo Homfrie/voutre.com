@@ -5,7 +5,7 @@ import Item from './common/Item';
 const DocumentItem = ({data, onClick}) => {
   return (
     <Item>
-      <Button onClick={onClick}>{data.name}</Button>
+      <Button data-id={data.get('id')} onClick={onClick}>{data.get('name')}</Button>
     </Item>
   );
 };

@@ -11,6 +11,8 @@ const Input = ({className, placeholder, type="text", onChange}) => {
       placeholder={placeholder}
       minLength={2}
       type={type}
+      forceNotifyOnBlur={false}
+      forceNotifyByEnter={false}
       debounceTimeout={300}
       onChange={onChange} /> :
     <input type={type} placeholder={placeholder} />;

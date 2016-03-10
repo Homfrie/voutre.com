@@ -14,8 +14,8 @@
     "type": "git",
     "url": "git+https://github.com/homfrie/voutre.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Homfrie LLC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/homfrie/voutre/issues"
   },
@@ -25,16 +25,25 @@
     "config": "1.19.0",
     "connect-history-api-fallback": "1.1.0",
     "fastclick": "^1.0.6",
+    "history": "2.0.1",
+    "humps": "1.0.0",
+    "isomorphic-fetch": "2.2.1",
     "jquery": "^2.2.1",
-    "lodash": "^4.6.1",
+    "lodash": "4.6.1",
+    "normalizr": "2.0.0",
     "react": "^0.14.7",
     "react-addons-css-transition-group": "0.14.7",
     "react-debounce-input": "2.2.0",
     "react-dom": "0.14.7",
+    "react-immutable-proptypes": "1.7.0",
     "react-redux": "4.4.0",
     "react-router": "2.0.0",
     "react-router-redux": "4.0.0",
-    "redux": "3.3.1"
+    "redux": "3.3.1",
+    "redux-immutable": "3.0.6",
+    "redux-logger": "2.6.1",
+    "redux-saga": "0.9.3",
+    "reselect": "2.1.0"
   },
   "devDependencies": {
     "argv": "0.0.2",

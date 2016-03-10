@@ -1,50 +1,39 @@
 import React, { Component, PropTypes } from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import {connect} from 'react-redux';
 import GoogleClient from '../lib/google-client';
 import DocumentList from '../components/DocumentList';
 import Input from '../components/common/Input';
+import {fetchDocs, selectSet} from '../actions';
 
 class DocumentSearchContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: [ ],
-      searchQuery: null
-    };
-    this.gapi = new GoogleClient();
-  }
+  static propTypes = {
+    fetchDocs: PropTypes.func.isRequired,
+    documents: ImmutablePropTypes.list.isRequired,
+    searchQuery: PropTypes.string
+  };
+
   componentDidMount() {
-    this.gapi.load(this.onLoadGAPI.bind(this));
-  }
-  componentWillUpdate(nextProps, nextState) {
-    const nextSearchQuery = nextState.searchQuery;
-    const prevSearchQuery = this.state.searchQuery;
-    if(nextSearchQuery !== prevSearchQuery) {
-      this.searchDriveDocs(nextSearchQuery);
-    }
-  }
-  onLoadGAPI() {
-    this.searchDriveDocs( );
-  }
-  searchDriveDocs(query) {
-    this.gapi.searchDriveDocs(query)
-      .then((resp, err) => {
-        if(!err)
-          this.setState({
-            data: resp.result.files
-          });
-      });
+    this.props.fetchDocs();
   }
   onDocumentSelect(e) {
-    console.info(e);
+    //TODO document has been selected, load up flash cards
   }
   render() {
     return (
       <div>
-        <Input onChange={e => this.setState({searchQuery: e.target.value})}/>
-        <DocumentList onSelect={this.onDocumentSelect} data={this.state.data}/>
+        <Input onChange={e => this.props.fetchDocs(e.target.value)}/>
+        <DocumentList onSelect={this.onDocumentSelect} data={this.props.documents}/>
       </div>
     );
   }
 }
 
-export default DocumentSearchContainer;
+const mapStateToProps = state => ({
+  documents: state.getIn(['docs', 'data'])
+});
+
+export default connect(mapStateToProps, {
+ fetchDocs: fetchDocs,
+ selectSet: selectSet
+})(DocumentSearchContainer);

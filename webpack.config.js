@@ -137,7 +137,7 @@ webpackConfig.module.loaders = [{
 // ------------------------------------
 // We use cssnano with the postcss loader, so we tell
 // css-loader not to duplicate minimization.
-const BASE_CSS_LOADER = 'css?sourceMap&-minimize'
+const BASE_CSS_LOADER = 'css?sourceMap&-minimize';
 
 // Add any packge names here whose styles need to be treated as CSS modules.
 // These paths will be combined into a single regex.
@@ -149,8 +149,8 @@ PATHS_TO_TREAT_AS_CSS_MODULES.push(
   CLIENT_PATH.replace(/[\^\$\.\*\+\-\?\=\!\:\|\\\/\(\)\[\]\{\}\,]/g, '\\$&')
 );
 
-const isUsingCSSModules = !!PATHS_TO_TREAT_AS_CSS_MODULES.length
-const cssModulesRegex = new RegExp(`(${PATHS_TO_TREAT_AS_CSS_MODULES.join('|')})`)
+const isUsingCSSModules = !!PATHS_TO_TREAT_AS_CSS_MODULES.length;
+const cssModulesRegex = new RegExp(`(${PATHS_TO_TREAT_AS_CSS_MODULES.join('|')})`);
 
 // Loaders for styles that need to be treated as CSS modules.
 if (isUsingCSSModules) {
@@ -159,7 +159,7 @@ if (isUsingCSSModules) {
     'modules',
     'importLoaders=1',
     'localIdentName=[name]__[local]___[hash:base64:5]'
-  ].join('&')
+  ].join('&');
 
   webpackConfig.module.loaders.push({
     test: /\.css$/,
@@ -213,7 +213,7 @@ webpackConfig.postcss = function(webpack) {
       safe: true,
       sourcemap: true
     })
-  ]
+  ];
 };
 
 // File loaders
