@@ -4,7 +4,7 @@ import styles from '../../styles/components/button.css';
 const cx = classNames.bind(styles);
 
 const Button = ({children, className, onClick}) => {
-  const classes = cx(['ui', 'button'], className);
+  const classes = cx([], className);
 
   return <button onClick={onClick} className={classes}>{children}</button>;
 };
@@ -12,7 +12,7 @@ const Button = ({children, className, onClick}) => {
 Button.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func
 };
 
 export default Button;

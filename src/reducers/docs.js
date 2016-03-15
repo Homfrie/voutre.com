@@ -14,11 +14,11 @@ export default function docsReducer(state = initialState, action) {
   const {resp, error, searchQuery} = action;
   switch(action.type) {
     case Types.FETCH_DOCS_START: 
-      return state.merge({loading: true, searchQuery});
+      return state.merge({loading: true, error, searchQuery});
     case Types.FETCH_DOCS_COMPLETE:
       return state.merge({loading: false, isLoaded: true, data: resp.result.files});
     case Types.FETCH_DOCS_ERROR:
-      return state.merge({loading: false, isLoaded: false, error});
+      return state.merge({loading: false, data: [ ], isLoaded: false, error});
     default:
       return state;
   }

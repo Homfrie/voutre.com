@@ -1,11 +1,14 @@
-@import "../variables.css";
-@import "../fonts.css";
+@import "../base/variables.css";
+@import "../base/fonts.css";
+@import "../base/reset.css";
 
-@import "../components/reset.css";
-@import "../components/site.css";
-@import "../components/segment.css";
-@import "../components/container.css";
-@import "../components/grid.css";
-@import "../components/segment.css";
+body {
+  font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-smoothing: antialiased;
+}
 
-@import '../themes/base.css';
+.segment {
+  lost-center: 980px;
+  display: flex;
+  min-height: 100vh;
+}

@@ -1,0 +1,65 @@
+.segment {
+  padding-top:20px;
+  flex: 1 100%;
+  order: 2;
+  text-align: center;
+}
+.segment:hover .marker {
+  opacity: 0;
+}
+.segment:hover .correct {
+  opacity: 1;
+  transform: translate3d(10px,-20px,0);
+}
+.segment:hover .correct:hover {
+  transform: translate3d(10px,-20px,0) scale(1.2); 
+}
+.segment:hover .correct:hover:active {
+  transform: translate3d(10px,-20px,0) scale(1) rotate(20deg);
+}
+.segment:hover .flip {
+  opacity: 1;
+  transform: translate3d(0, 30px, 0);
+}
+.segment:hover .flip:hover {
+  transform: translate3d(0, 30px, 0) scale(1.2);
+}
+.segment:hover .flip:hover:active {
+  transform: translate3d(0, 30px, 0) scale(1) rotate(-35deg);
+}
+.segment:hover .incorrect {
+  opacity: 1;
+  transform: translate3d(-10px,-20px,0);
+}
+.segment:hover .incorrect:hover {
+  transform: translate3d(-10px,-20px,0) scale(1.2);
+}
+.segment:hover .incorrect:hover:active {
+  transform: translate3d(-10px,-20px,0) scale(1) rotate(-20deg);
+}
+.correct {
+  background-color: #4cff97;
+  transform: translateX(-62px);
+}
+.incorrect {
+  background-color: #fa4a65;
+  transform: translateX(62px);
+}
+.flip {
+  background-color: #40c4ff;
+}
+.correct, .flip, .incorrect, .marker {
+  font-size: 1.5em;
+  color: white;
+  transition: 0.2s;
+  opacity: 0;
+  border-radius: 12em;
+  height: 62px;
+}
+.marker {
+  opacity: 1;
+  position: absolute;
+  left: 50%;
+  margin-left: -30px;
+  background: #d0d0d0;
+}

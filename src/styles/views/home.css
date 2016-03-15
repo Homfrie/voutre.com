@@ -1,18 +1,14 @@
-@import "../components/header.css";
-@import "../components/grid.css";
-
-.home {
-  flex: 1;
-  justify-content: 'center';
-  align-items: 'center';
+.segment {
 }
+
 .leadin {
+  lost-column: 4/5;
   font-size: 2em; 
-  font-family: 'Calluna';
+  font-family: 'Test', sans-serif;
   font-weight: 400;
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  text-align: center;
+  text-align: left;
+}
+
+.auth-docs {
+  lost-column: 1/5;
 }

@@ -12,7 +12,7 @@ export default function gapiReducer(state = initialState, action) {
   const {error} = action;
   switch(action.type) {
     case Types.FETCH_GAPI_START: 
-      return state.set('loading', true);
+      return state.merge({loading: true, error: null});
     case Types.FETCH_GAPI_COMPLETE:
       return state.merge({loading: false, isLoaded: true});
     case Types.FETCH_GAPI_ERROR:

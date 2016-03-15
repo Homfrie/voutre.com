@@ -4,6 +4,8 @@ import path from 'path';
 import argv from 'argv';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import postcssImport from 'postcss-import';
+import lost from 'lost';
+import postcssAssets from 'postcss-assets';
 
 
 const CLIENT_PATH = __dirname + '/src';
@@ -13,13 +15,15 @@ const ENV = process.env.NODE_ENV || 'development';
 const COMPILER_VENDOR = [
   'history',
   'react',
-  'react-router'
+  'react-redux',
+  'react-router',
+  'react-router-redux',
+  'redux'
 ];
 
 const webpackConfig = {
   name: 'client',
   target: 'web',
-  browser: 'google chrome',
   resolve: {
     root: CLIENT_PATH,
     extensions: ['', '.js', '.jsx', '.json']
@@ -62,7 +66,7 @@ webpackConfig.plugins = [
   }),
   new HtmlWebpackPlugin({
     template: `${CLIENT_PATH}/index.html`,
-    hash: false,
+    hash: true,
     filename: 'index.html',
     inject: 'body',
     minify: {
@@ -180,8 +184,7 @@ webpackConfig.module.loaders.push({
   loaders: [
     'style',
     BASE_CSS_LOADER,
-    'postcss',
-    'sass?sourceMap'
+    'postcss'
   ]
 });
 
@@ -201,6 +204,12 @@ webpackConfig.module.loaders.push({
 webpackConfig.postcss = function(webpack) {
   return [
     postcssImport({ addDependencyTo: webpack }),
+    postcssAssets({ 
+      basePath: 'src/assets/',
+      loadPaths: ["img/", "fonts/"],
+      baseUrl: "http://localhost:3005/assets/"
+    }),
+    lost( ),
     cssnano({
       autoprefixer: {
         add: true,
@@ -216,9 +225,6 @@ webpackConfig.postcss = function(webpack) {
   ];
 };
 
-// File loaders
-/* eslint-disable */
-/*
 webpackConfig.module.loaders.push(
   { test: /\.woff(\?.*)?$/,  loader: 'url?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=application/font-woff' },
   { test: /\.woff2(\?.*)?$/, loader: 'url?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=application/font-woff2' },
@@ -228,6 +234,5 @@ webpackConfig.module.loaders.push(
   { test: /\.svg(\?.*)?$/,   loader: 'url?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=image/svg+xml' },
   { test: /\.(png|jpg)$/,    loader: 'url?limit=8192' }
 );
-*/
 
 export default webpackConfig;

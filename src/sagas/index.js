@@ -7,19 +7,25 @@ import {
   googleUserAuthorizeComplete,
   googleUserAuthorizeError,
   fetchDocsComplete,
-  fetchDocsError
+  fetchDocsError,
+  fetchSetComplete,
+  fetchSetError
 } from '../actions';
 
 import {
   authorize as GAPIAuthorize, 
   searchDriveDocs as GAPISearchDriveDocs, 
-  loadScript as GAPILoadScript
+  loadScript as GAPILoadScript,
+  getDriveDoc as GAPIGetDriveDoc
 } from '../lib/google-client';
+
+import parseDoc from "../lib/parse-doc.js";
 
 import {
   isLoginImmediate,
   isGAPILoaded, 
-  getSearchQuery
+  getSearchQuery,
+  getSetId 
 } from '../reducers';
 
 function* loadGAPI() {
@@ -40,6 +46,19 @@ function* googleAuthorize() {
     yield put(googleUserAuthorizeComplete(resp));
   } catch (e) {
     yield put(googleUserAuthorizeError(e));
+  }
+}
+
+function* fetchSet() {
+  try {
+    const setId = yield select(getSetId);
+    const resp = yield call(GAPIGetDriveDoc, setId);
+    const cards = parseDoc(resp.body);
+    yield put(fetchSetComplete({ 
+      cards
+    }));
+  } catch (e) {
+    yield put(fetchSetError(e));
   }
 }
 
@@ -65,16 +84,16 @@ function* watchFetchDocs() {
   yield* takeLatest(ActionTypes.FETCH_DOCS_START, fetchDocs);
 }
 
+function* watchFetchSet() {
+  yield* takeLatest(ActionTypes.FETCH_SET_START, fetchSet);
+}
+
+
 export default function* root() {
   yield [
     fork(watchFetchDocs), 
+    fork(watchFetchSet), 
     fork(watchLoadGAPI), 
     fork(watchGoogleAuthorize)
   ];
 }
-
-/*
-export default function* watchSearchDriveDocs() {
-  yield* takeLatest(ActionTypes.FETCH_DOCS, searchDriveDocs);
-}
-*/
