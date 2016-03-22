@@ -3,17 +3,17 @@ import Button from './common/Button';
 import Item from './common/Item';
 import {Link} from 'react-router';
 
-const DocumentItem = ({data, onClick}) => {
+const DocumentItem = ({data}) => {
   const link = `/sets/${data.get('id')}`;
+  const classes = ['document'];
   return (
-    <Item>
+    <Item className={classes}>
       <Link to={link}>{data.get('name')}</Link>
     </Item>
   );
 };
 
 DocumentItem.propTypes = {
-  onClick: PropTypes.func.isRequired,
   data: React.PropTypes.object.isRequired
 };
 

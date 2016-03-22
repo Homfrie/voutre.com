@@ -4,20 +4,17 @@ import styles from '../../styles/components/item.css';
 const cx = classNames.bind(styles);
 
 const Item = ({className, children}) => {
-  const containerClasses = cx(['item']);
-  const contentClasses = cx(['content'], className);
+  const classes = cx(['item'], className);
 
   return (
-    <div className={containerClasses}>
-      <div className={contentClasses}>
-        {children}
-      </div>
+    <div className={classes}>
+      {children}
     </div>
   );
 };
 
 Item.propTypes = {
-  className: PropTypes.string,
+  className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   children: PropTypes.oneOfType([PropTypes.element, PropTypes.arrayOf(PropTypes.element)])
 };
 

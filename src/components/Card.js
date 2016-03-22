@@ -14,7 +14,7 @@ const Card = ({card, showAnswer}) => {
   const backClass = cx('back');
 
   return (
-    <CSSTransitionGroup transitionAppear={true} transitionAppearTimeout={2000} transitionEnterTimeout={2000} transitionLeaveTimeout={2000} transitionName={styles}>
+    <CSSTransitionGroup transitionAppear transitionAppearTimeout={2000} transitionEnterTimeout={2000} transitionLeaveTimeout={2000} transitionName={styles}>
       <div className={classes}>
         <div className={frontClass}>
           {card.get('front')}

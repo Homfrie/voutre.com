@@ -1,0 +1,57 @@
+.segment {
+  color: #fff;
+  background-color: #FF5D5D;
+  padding: 20px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  flex-flow: row;
+}
+
+.page-name {
+  width: 200px;
+  flex: 0;
+}
+
+.page-name h1 {
+  font-weight: 100;
+  text-transform: uppercase;
+  border-bottom: 5px solid white;
+  font-size: 3em;
+  margin-top: 0;
+}
+
+.step-name {
+  font-weight: 400;
+  margin-top: 0;
+}
+
+.steps {
+  display: flex;
+  flex-direction: row;
+  flex-flow: row wrap;
+}
+
+.step {
+  flex: 0 0;
+  width: 200px;
+  min-width: 200px;
+  margin: 0 20px;
+  height: 50vh;
+}
+
+.step p {
+  text-align: justify;
+}
+
+.step a {
+  color: #fff;
+  border-bottom: 1px solid #fff;
+}
+
+.step .google.button {
+  background: #4885ed;
+}

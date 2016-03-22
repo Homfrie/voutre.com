@@ -1,10 +1,10 @@
 import React from 'react';
 import Immutable from "immutable";
 import {render} from 'react-dom';
-import { applyMiddleware, createStore } from 'redux';
-import { Provider } from 'react-redux';
-import { Router, useRouterHistory} from 'react-router';
-import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux';
+import {applyMiddleware, createStore} from 'redux';
+import {Provider} from 'react-redux';
+import {Router, useRouterHistory} from 'react-router';
+import {routerMiddleware, syncHistoryWithStore} from 'react-router-redux';
 
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 import createSagaMiddleware from 'redux-saga';
@@ -14,9 +14,8 @@ import routes from './routes';
 import reducers from './reducers';
 import sagas from './sagas';
 
-const __BASENAME__ = JSON.stringify(process.env.BASENAME || '');
 const browserHistory = useRouterHistory(createBrowserHistory)({
-  basename: __BASENAME__
+  basename: null
 });
 
 const loggerMiddleware = createLogger();

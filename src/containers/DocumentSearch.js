@@ -3,10 +3,13 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import {connect} from 'react-redux';
 import { browserHistory } from 'react-router';
 import { push } from 'react-router-redux';
-import GoogleClient from '../lib/google-client';
 import DocumentList from '../components/DocumentList';
 import Input from '../components/common/Input';
 import {fetchDocs, fetchSet} from '../actions';
+
+import classNames from 'classnames/bind';
+import styles from '../styles/components/document-search.css';
+const cx = classNames.bind(styles);
 
 class DocumentSearchContainer extends Component {
   static propTypes = {
@@ -20,10 +23,11 @@ class DocumentSearchContainer extends Component {
     this.props.fetchDocs();
   }
   render() {
+    const classes = cx(['segment']);
     return (
-      <div>
-        <Input onChange={e => this.props.fetchDocs(e.target.value)}/>
-        <DocumentList onSelect={(e, id) => this.props.goTo(`/sets/${id}`)} data={this.props.documents}/>
+      <div className={classes}>
+        <Input placeholder="search google drive" className="" onChange={e => this.props.fetchDocs(e.target.value)}/>
+        <DocumentList data={this.props.documents}/>
       </div>
     );
   }

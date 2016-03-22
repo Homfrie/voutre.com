@@ -5,9 +5,10 @@ import AppLayout from '../containers/layouts/App';
 import HomeView from '../containers/views/Home';
 import CardSetView from '../containers/views/CardSet';
 import NotFoundView from '../containers/views/NotFound';
+import TutorialView from '../containers/views/Tutorial';
 
 
-export default state => {
+const routes = state => {
   /*
   const requireAuth = (nextState, replace) => {
     const loggedInUser = getState().auth.viewer;
@@ -25,7 +26,10 @@ export default state => {
               component={HomeView} />
             <Route path="sets/:documentId"
               component={CardSetView} />
+            <Route path="tutorial"
+              component={TutorialView} />
             <Route path="*" 
               component={NotFoundView} />
           </Route>);
 };
+export default routes;

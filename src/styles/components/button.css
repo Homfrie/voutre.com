@@ -8,4 +8,13 @@ button {
   line-height: 1em;
   text-align: center;
   padding: .78571429em;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: scale(1.1); 
+}
+
+button:hover:active {
+  transform: scale(1);
 }
