@@ -1,25 +1,5 @@
 import config from '../config';
 
-export const loadScript = ( ) => {
-  //Check if already loaded
-  return new Promise((resolve, reject) => {
-    //TODO add timeOut
-    window.gapiAsyncInit = () => {
-      resolve();
-    };
-
-    (((d, s, id) => {
-      const element = d.getElementsByTagName(s)[0];
-      const fjs = element;
-      let js = element;
-      if (d.getElementById(id)) {return;}
-      js = d.createElement(s); js.id = id;
-      js.src = '//apis.google.com/js/client.js?onload=gapiAsyncInit';
-      fjs.parentNode.insertBefore(js, fjs);
-    })(document, 'script', 'google-jssdk'));
-  });
-};
-
 export const authorize = (immediate=false) => {
   return window.gapi.auth.authorize({
     client_id: config.google.clientId,

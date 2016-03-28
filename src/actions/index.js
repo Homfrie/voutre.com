@@ -11,9 +11,6 @@ export const Types = {
   MARK_CARD_CORRECT: 'MARK_CARD_CORRECT',
   MARK_CARD_INCORRECT: 'MARK_CARD_INCORRECT',
   SELECT_SET: 'SELECT_SET',
-  FETCH_GAPI_START: 'FETCH_GAPI_START',
-  FETCH_GAPI_COMPLETE: 'FETCH_GAPI_COMPLETE',
-  FETCH_GAPI_ERROR: 'FETCH_GAPI_ERROR',
   GOOGLE_USER_AUTHORIZE_START: 'GOOGLE_USER_AUTHORIZE_START',
   GOOGLE_USER_AUTHORIZE_COMPLETE: 'GOOGLE_USER_AUTHORIZE_COMPLETE',
   GOOGLE_USER_AUTHORIZE_ERROR: 'GOOGLE_USER_AUTHORIZE_ERROR',
@@ -48,21 +45,6 @@ export const markCardCorrect = id => ({
   type: Types.MARK_CARD_CORRECT,
   timestamp: new Date( ),
   id
-});
-
-export const fetchGAPI = ( ) => ({
-  type: Types.FETCH_GAPI_START
-});
-
-export const fetchGAPIComplete = ( ) => ({
-  type: Types.FETCH_GAPI_COMPLETE,
-  gapiLoaded: true
-});
-
-export const fetchGAPIError = error => ({
-  type: Types.FETCH_GAPI_ERROR,
-  gapiLoaded: false,
-  error
 });
 
 export const googleUserAuthorizeStart = (loginImmediate=false) => ({

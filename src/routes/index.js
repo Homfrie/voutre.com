@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, IndexRoute } from 'react-router';
-import { UserAuthWrapper } from 'redux-auth-wrapper'
+import { UserAuthWrapper } from 'redux-auth-wrapper';
 import {push} from 'react-router-redux';
 
 import AppLayout from '../containers/layouts/App';
@@ -15,7 +15,7 @@ const UserIsAuthenticated = UserAuthWrapper({
   redirectAction: push, 
   predicate: user => user.get('isSignedIn'),
   wrapperDisplayName: 'UserIsAuthenticated' 
-})
+});
 
 const routes = state => {
   return (<Route path="/" component={AppLayout}>

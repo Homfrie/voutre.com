@@ -2,8 +2,6 @@ import { takeLatest } from 'redux-saga';
 import { cancel, take, race, select, call, put, fork } from 'redux-saga/effects';
 import {
   Types as ActionTypes, 
-  fetchGAPIComplete, 
-  fetchGAPIError, 
   googleUserAuthorizeComplete,
   googleUserAuthorizeError,
   fetchDocsComplete,
@@ -21,7 +19,6 @@ import parseDoc from "../lib/parse-doc.js";
 import {
   isLoginImmediate,
   isAutosaveEnabled, 
-  isGAPILoaded, 
   getSearchQuery,
   getSetId,
   getCards,
@@ -31,16 +28,6 @@ import {
 function delay(ms) {
   return new Promise(resolve => setTimeout(() => resolve(true), ms));
 } 
-
-function* loadGAPI() {
-  try {
-    // TODO Do not load gapi if it's loaded
-    yield call(GAPI.loadScript);
-    yield put(fetchGAPIComplete());
-  } catch (e) {
-    yield put(fetchGAPIError(e.message));
-  }
-}
 
 function* googleAuthorize() {
   try {
@@ -125,10 +112,6 @@ function* watchGoogleAuthorize() {
   yield* takeLatest(ActionTypes.GOOGLE_USER_AUTHORIZE_START, googleAuthorize);
 }
 
-function* watchLoadGAPI() {
-  yield* takeLatest(ActionTypes.FETCH_GAPI_START, loadGAPI);
-}
-
 function* watchFetchDocs() {
   yield* takeLatest(ActionTypes.FETCH_DOCS_START, fetchDocs);
 }
@@ -153,7 +136,6 @@ export default function* root() {
   yield [
     fork(watchFetchDocs), 
     fork(watchFetchSet), 
-    fork(watchLoadGAPI), 
     fork(watchGoogleAuthorize),
     fork(watchSaveStudySession),
     fork(watchAutosavePoll)
