@@ -23,6 +23,7 @@ const sagaMiddleware = createSagaMiddleware(sagas);
 
 const middleware = applyMiddleware(
   sagaMiddleware,
+  //loggerMiddleware,
   routerMiddleware(browserHistory)
 );
 

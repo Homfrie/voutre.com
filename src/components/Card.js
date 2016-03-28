@@ -16,12 +16,8 @@ const Card = ({card, showAnswer}) => {
   return (
     <CSSTransitionGroup transitionAppear transitionAppearTimeout={2000} transitionEnterTimeout={2000} transitionLeaveTimeout={2000} transitionName={styles}>
       <div className={classes}>
-        <div className={frontClass}>
-          {card.get('front')}
-        </div>
-        <div className={backClass}>
-          {card.get('back')}
-        </div>
+        <div className={frontClass} dangerouslySetInnerHTML={{__html: card.get('front')}}/>
+        <div className={backClass} dangerouslySetInnerHTML={{__html: card.get('back')}}/>
       </div>
     </CSSTransitionGroup>
   );

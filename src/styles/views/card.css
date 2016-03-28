@@ -1,7 +1,7 @@
 .segment {
-  width: 100%;
   flex: 1 100%;
   text-align: center;
+  margin: auto;
 }
 
 .front {
@@ -10,7 +10,7 @@
 }
 
 .back {
-  font-size: 3.2em;
+  font-size: 3em;
   visibility: hidden;
   opacity: 0;
   transition: 0.2s;

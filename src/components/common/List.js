@@ -10,7 +10,7 @@ const List = ({className, children}) => {
 };
 
 List.propTypes = {
-  className: PropTypes.string,
+  className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   children: ImmutablePropTypes.listOf(PropTypes.element).isRequired
 };
 

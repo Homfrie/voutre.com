@@ -12,7 +12,11 @@ import {
   markCardCorrect, 
   markCardIncorrect, 
   getNextCard, 
-  googleUserAuthorizeStart
+  setStudySessionAsContinuous,
+  setStudySessionAsSpaced,
+  googleUserAuthorizeStart,
+  startAutosave,
+  stopAutosave
 } from '../../actions';
 
 import UserAuthContainer from '../UserAuth';
@@ -21,42 +25,49 @@ import classNames from 'classnames/bind';
 import styles from '../../styles/views/cardset.css';
 const cx = classNames.bind(styles);
 
-//TODO refactor auth login out of this and into router
-class CardSetView extends Component {
+class StudyView extends Component {
   static propTypes = {
     fetchSet: PropTypes.func.isRequired,
-    login: PropTypes.func.isRequired,
     markCardCorrect: PropTypes.func.isRequired,
     markCardIncorrect: PropTypes.func.isRequired,
+    startAutosave: PropTypes.func.isRequired,
+    stopAutosave: PropTypes.func.isRequired,
+    setStudySessionAsContinuous: PropTypes.func.isRequired,
+    setStudySessionAsSpaced: PropTypes.func.isRequired,
     toggleAnswer: PropTypes.func.isRequired,
     getNextCard: PropTypes.func.isRequired,
     documentId: PropTypes.string.isRequired,
-    isSignedIn: PropTypes.bool.isRequired,
-    signInError: PropTypes.string,
     fetchSetError: PropTypes.string,
+    studyType: PropTypes.string.isRequired,
     activeCard: ImmutablePropTypes.map,
     setIsLoaded: PropTypes.bool.isRequired
   }
 
   componentWillMount() {
-    if(this.props.isSignedIn)
-      this.props.fetchSet(this.props.documentId);
-    else
-      this.props.login(true);
+    this.props.fetchSet(this.props.documentId);
+    this.props.startAutosave( );
   }
 
   componentWillReceiveProps(nextProps) {
-    if(this.props.isSignedIn != nextProps.isSignedIn &&
-       !nextProps.setIsLoaded && !nextProps.fetchSetError)
-      this.props.fetchSet(this.props.documentId);
+    if(!this.props.setIsLoaded && nextProps.setIsLoaded) {
+      this.props.getNextCard( );
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.stopAutosave( );
   }
 
   onCorrect() {
-    this.props.markCardCorrect(this.props.activeCard);
+    if( !this.props.activeCard ) 
+      this.props.setStudySessionAsContinuous( );
+    else if( this.props.studyType == "spaced" )
+      this.props.markCardCorrect(this.props.activeCard.get('id'));
+
     this.props.getNextCard();
   }
   onIncorrect() {
-    this.props.markCardIncorrect(this.props.activeCard);
+    this.props.markCardIncorrect(this.props.activeCard.get('id'));
     this.props.getNextCard();
   }
   onToggle() {
@@ -65,9 +76,7 @@ class CardSetView extends Component {
   render( ) {
     const containerClass = cx('segment'.split(' '));
     let children;
-    if(!this.props.isSignedIn && this.props.signInError)
-      children = <UserAuthContainer/>;
-    else if(this.props.setIsLoaded) 
+    if(this.props.setIsLoaded) 
       children = (
         <div className={containerClass}>
           <Card key={this.props.activeCard.get('id')} card={this.props.activeCard}/>
@@ -86,20 +95,23 @@ class CardSetView extends Component {
 }
 
 const mapStateToProps = (state, prop) => ({
-  isSignedIn: state.getIn(['auth', 'isSignedIn']),
   documentId: prop.params.documentId,
   signInError: state.getIn(['auth', 'error']),
   fetchSetError: state.getIn(['set', 'error']),
   activeCard: state.getIn(['cards', 'data'])
     .get(state.getIn(['cards', 'activeIndex'])),
-  setIsLoaded: state.getIn(['set', 'isLoaded'])
+  setIsLoaded: state.getIn(['set', 'isLoaded']),
+  studyType: state.getIn(['studySession', 'studyType'])
 });
 
 export default connect(mapStateToProps, {
   fetchSet,
   markCardCorrect,
   markCardIncorrect,
+  startAutosave,
   getNextCard,
+  stopAutosave,
   toggleAnswer,
-  login: googleUserAuthorizeStart
-})(CardSetView);
+  setStudySessionAsContinuous,
+  setStudySessionAsSpaced
+})(StudyView);

@@ -1,0 +1,35 @@
+{
+  "showAnswer": true,
+  "activeIndex": 0,
+  "data": [{
+    "id": 1,
+    "front": "How does it work?",
+    "back": "Use the controls below to mark a question correct, incorrect or flip to find the answer.",
+    "level": 1,
+    "lastCorrectAt": null
+  },{
+    "id": 2,
+    "front": "How do I input cards?",
+    "back": "Through Google Drive! At the end of this tutorial or on the homepage you can sign-in through Google and search your documents.",
+    "level": 1,
+    "lastCorrectAt": null
+  },{
+    "id": 3,
+    "front": "How should my Doc be formatted?", 
+    "back": "front - back<br/>hola - hello<br/>adiós - good-bye",
+    "level": 1,
+    "lastCorrectAt": null
+  },{
+    "id": 4,
+    "front": "How does Voutre teach?", 
+    "back": "We use a version of the spaced-repetition so you'll see more of the cards you're having difficulty.",
+    "level": 1,
+    "lastCorrectAt": null
+  },{
+    "id": 5,
+    "front": "Does Voutre save my progress?", 
+    "back": "All of your progress is saved to your Google Drive. You can start-up at anytime from your phone, tablet or laptop.",
+    "level": 1,
+    "lastCorrectAt": null
+  }]
+}

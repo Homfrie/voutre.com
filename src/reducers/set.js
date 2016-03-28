@@ -6,7 +6,9 @@ const initialState = Immutable.fromJS({
   loading: false,
   isLoaded: false,
   error: null,
-  id: null
+  id: null,
+  appDataId: null,
+  lastModifiedAt: null
 });
 
 export default function setReducer(state = initialState, action) {
@@ -15,7 +17,8 @@ export default function setReducer(state = initialState, action) {
     case Types.FETCH_SET_START: 
       return state.merge({loading: true, error: null, id});
     case Types.FETCH_SET_COMPLETE:
-      return state.merge({loading: false, isLoaded: true});
+      console.info(resp);
+      return state.merge({loading: false, isLoaded: true, appDataId: resp.appDataId, lastModifiedAt: resp.lastModifiedAt});
     case Types.FETCH_SET_ERROR:
       return state.merge({loading: false, data: null, isLoaded: false, error});
     default:

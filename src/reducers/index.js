@@ -14,6 +14,8 @@ export const getSetId = state => state.getIn(['set', 'id']);
 export const getSearchQuery = state => state.getIn(['docs', 'searchQuery']);
 export const isLoginImmediate = state => state.getIn(['auth', 'loginImmediate']);
 export const isGAPILoaded = state => state.getIn(['gapi', 'isLoaded']);
+export const getCards = state => state.get('cards');
+export const getSet = state => state.get('set');
 
 export default combineReducers({ 
   gapi,

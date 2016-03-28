@@ -21,7 +21,8 @@ class AppLayout extends Component {
   render( ) {
     const classes = cx('segment'.split(' '));
     const children = this.props.isGAPILoaded ? 
-      this.props.children : null;
+      this.props.children : <div>Loading</div>;
+    //const children = this.props.children;
 
     return (
       <div className={classes}>

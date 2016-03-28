@@ -1,6 +1,12 @@
 import Immutable from 'immutable';
 
 export const Types = {
+  START_AUTOSAVE: 'START_AUTOSAVE',
+  STOP_AUTOSAVE: 'STOP_AUTOSAVE',
+  SAVE_STUDY_SESSION_START: 'SAVE_STUDY_SESSION_START',
+  SAVE_STUDY_SESSION_COMPLETE: 'SAVE_STUDY_SESSION_COMPLETE',
+  SAVE_STUDY_SESSION_ERROR: 'SAVE_STUDY_SESSION_ERROR',
+  SET_STUDY_SESSION_AS_CONTINUOUS: 'SET_STUDY_SESSION_AS_CONTINUOUS',
   UPDATE_SET: 'UPDATE_SET',
   MARK_CARD_CORRECT: 'MARK_CARD_CORRECT',
   MARK_CARD_INCORRECT: 'MARK_CARD_INCORRECT',
@@ -28,20 +34,20 @@ export const selectSet = id => ({
   id
 });
 
-export const updateSet = cards => ({
+export const updateSet = resp => ({
   type: Types.UPDATE_SET,
-  cards
+  resp 
 });
 
-export const markCardIncorrect = card => ({
+export const markCardIncorrect = id => ({
   type: Types.MARK_CARD_INCORRECT,
-  card
+  id
 });
 
-export const markCardCorrect = card => ({
+export const markCardCorrect = id => ({
   type: Types.MARK_CARD_CORRECT,
-  timestamp: Date.now( ),
-  card
+  timestamp: new Date( ),
+  id
 });
 
 export const fetchGAPI = ( ) => ({
@@ -117,9 +123,40 @@ export const setActionType = newType => ({
 });
 
 export const getNextCard = ( ) => ({
-  type: Types.GET_NEXT_CARD
+  type: Types.GET_NEXT_CARD,
+  timestamp: new Date( )
 });
 
 export const toggleAnswer = ( ) => ({
   type: Types.TOGGLE_ANSWER
+});
+
+export const setStudySessionAsContinuous = ( ) => ({
+  type: Types.SET_STUDY_TYPE,
+  studyType: 'continuous'
+});
+
+export const setStudySessionAsSpaced = ( ) => ({
+  type: Types.SET_STUDY_TYPE,
+  studyType: 'spaced'
+});
+
+export const saveStudySession = ( ) => ({
+  type: Types.SAVE_STUDY_SESSION
+});
+
+export const saveStudySessionComplete = ( ) => ({
+  type: Types.SAVE_STUDY_SESSION_COMPLETE
+});
+
+export const saveStudySessionError = ( ) => ({
+  type: Types.SAVE_STUDY_SESSION_ERROR
+});
+
+export const startAutosave = ( ) => ({
+  type: Types.START_AUTOSAVE
+});
+
+export const stopAutosave = ( ) => ({
+  type: Types.STOP_AUTOSAVE
 });
