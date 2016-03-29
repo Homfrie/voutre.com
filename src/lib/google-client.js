@@ -77,28 +77,45 @@ export const exportAsHtml = id => {
 };
 
 export const saveAppData = appState => {
-  console.info(appState);
-  const resource = {
-    'name': 'config.json',
-    'mimeType': 'application/json'
-
-    //'parents': [ 'appDataFolder']
+  const boundary = '-------314159265358979323846';
+  const delimiter = `\r\n--${boundary}\r\n`;
+  const contentType = 'application/octet-stream';
+  const metadata = {
+    name: 'voutre.json',
+    mimeType: contentType,
+    parents: ['appDataFolder']
   };
-  const media = {
-    mimeType: 'application/json',
+  const multipart = [{
+    'Content-Type': 'application/json',
+    body: JSON.stringify(metadata)
+  }, {
+    'Content-Type': 'application/json',
     body: JSON.stringify(appState)
-  };
-  return window.gapi.client.drive.files.create({
-    uploadType: 'media',
-    resource,
-    media,
-    //parents: ['appDataFolder'],
-    fields: 'id'
+  }];
+
+  const multipartRequestBody =`
+    ${delimiter}
+    Content-Type: application/json\r\n\r\n
+    ${JSON.stringify(metadata)}
+    ${delimiter}
+    Content-Type: ${contentType} \r\n
+    \r\n
+    ${JSON.stringify(appState)}
+    \r\n--${boundary}--`;
+
+
+  return window.gapi.client.request({
+    path: "/upload/drive/v3/files",
+    method: 'POST',
+    params: {'uploadType': 'multipart', alt: 'json'},
+    headers: {
+      'Content-Type': `multipart/mixed; boundary="${boundary}"`
+    },
+    body: multipart
   });
 };
 
 export const getAppData = id => {
-
   return window.gapi.client.drive.files.get({
     spaces: ['appDataFolder'],
     fileId: id

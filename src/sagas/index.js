@@ -106,6 +106,7 @@ function* saveStudySession() {
     const updateMetaResp = yield call(GAPI.updateDocMeta, set.get('id'), resp.result.id);
     yield put(saveStudySessionComplete(resp));
   } catch (e) {
+    console.info("Study sess", e);
     yield put(saveStudySession(e));
   }
 }
