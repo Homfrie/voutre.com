@@ -5,20 +5,25 @@ import {Types} from "../actions";
 const initialState = Immutable.fromJS({
   loading: false,
   isSignedIn: false,
-  error: undefined,
-  provider: "google",
-  loginImmediate: false
+  error: null,
+  data: { }
 });
 
 export default function authReducer(state = initialState, action) {
-  const {error, loginImmediate} = action;
+  const {error, resp} = action;
   switch(action.type) {
-    case Types.GOOGLE_USER_AUTHORIZE_START: 
-      return state.merge({ loginImmediate, loading: true, error });
-    case Types.GOOGLE_USER_AUTHORIZE_COMPLETE: 
-      return state.merge({ isSignedIn: true, loading: false });
-    case Types.GOOGLE_USER_AUTHORIZE_ERROR: 
-      return state.merge({ isSignedIn: false, loading: false, error});
+    case Types.USER_AUTHORIZE_START: 
+      return state.merge({ loading: true, error });
+    case Types.USER_AUTHORIZE_COMPLETE: 
+      return state.merge({ 
+        data: resp,
+        isSignedIn: true, 
+        loading: false 
+      });
+    case Types.USER_AUTHORIZE_ERROR: 
+      return initialState.merge({ 
+        error
+      });
     default:
       return state;
   }

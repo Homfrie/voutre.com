@@ -1,97 +1,119 @@
 import { takeLatest } from 'redux-saga';
 import { cancel, take, race, select, call, put, fork } from 'redux-saga/effects';
+import store from '../lib/store-with-expiration';
 import {
   Types as ActionTypes, 
-  googleUserAuthorizeComplete,
-  googleUserAuthorizeError,
-  fetchDocsComplete,
-  fetchDocsError,
+  userAuthorizeComplete,
+  userAuthorizeError,
+  saveSetComplete,
+  saveSetError,
   fetchSetComplete,
   fetchSetError,
+  fetchSetsComplete,
+  fetchSetsError,
+  fetchCardComplete,
+  fetchCardError,
   saveStudySessionComplete,
-  saveStudySessionError
+  saveStudySessionError,
+  saveCardComplete,
+  saveCardError
 } from '../actions';
 
-import * as GAPI from '../lib/google-client';
+import * as client from '../lib/voutre-client';
 
 import parseDoc from "../lib/parse-doc.js";
 
 import {
-  isLoginImmediate,
-  isAutosaveEnabled, 
-  getSearchQuery,
-  getSetId,
-  getCards,
-  getSet
+  getUserId
 } from '../reducers';
 
 function delay(ms) {
   return new Promise(resolve => setTimeout(() => resolve(true), ms));
 } 
 
-function* googleAuthorize() {
+function* authorize({provider, code}) {
   try {
-    // TODO do not login if already logged in
-    const loginImmediate = yield select(isLoginImmediate);
-    const resp = yield call(GAPI.authorize, loginImmediate);
-    yield put(googleUserAuthorizeComplete(resp));
+    const resp = yield call(client.authorize, provider, code);
+    store.set('token', resp.data.data.jwt, resp.data.data.exp);
+    store.set('user', resp.data.data.user);
+    yield put(userAuthorizeComplete(resp.data.data.user));
   } catch (e) {
-    yield put(googleUserAuthorizeError(e));
+    yield put(userAuthorizeError(e));
   }
 }
 
-function* fetchSet() {
+function* saveCard({card}) {
   try {
-    const setId = yield select(getSetId);
-    const meta = yield call(GAPI.getById, setId);
-    const props = meta.result.appProperties;
-    let cards;
-    console.info(new Date(props.lastModifiedAt), new Date(meta.result.modifiedTime));
-    if(!props) {
-      const resp = yield call(GAPI.exportAsHtml, setId);
-      cards = parseDoc(resp.body);
-    }
-    else if(new Date(props.lastModifiedAt).getTime( ) <
-            new Date(meta.result.modifiedTime).getTime( )) {
-              console.info("changed recently");
-              //Change modifiedTime to viewedByMeTime since modified seems to be updated when appProperties are updated...
-      const resp = yield call(GAPI.exportAsHtml, setId);
-      const cardsFromDoc = parseDoc(resp.body);
-      const cardsFromApp = yield call(GAPI.getAppData, props.appDataId);
-      //Find the intersect between changes
-      cards = cardsFromApp;
-    }
-    else {
-      cards = yield call(GAPI.getAppData, props.appDataId);
-      console.info(cards);
-    }
-
-    yield put(fetchSetComplete({ 
-      cards
-    }));
+    const token = store.get('token');
+    const resp = yield call(client.saveCard, token, card);
   } catch (e) {
-    console.info(e);
+    yield put(saveCardError(e));
+  }
+}
+
+function* fetchCard({setId, id}) {
+  try {
+    const token = store.get('token');
+    const cardResp = yield call(client.fetchCard, token, {setId, id});
+    yield put(fetchCardComplete({resp: cardResp.data.data}));
+  } catch (e) {
+    yield put(fetchCardError(e));
+  }
+}
+
+function* saveSet({set}) {
+  try {
+    const token = store.get('token');
+    const resp = yield call(client.saveSet, token, set);
+    yield put(saveSetComplete(resp.data.data));
+  } catch (e) {
+    yield put(saveSetError(e));
+  }
+}
+
+function* fetchSet({id, cardId}) {
+  try {
+    const token = store.get('token');
+    const resp = yield call(client.fetchSets, token, {id});
+    const data = cardId ? Object.assign(resp.data.data, 
+                        {activeIndex: 
+                          resp.data.data.cards.findIndex( c => c.id == cardId )}) :
+                          resp.data.data;
+    yield put(fetchSetComplete(data));
+  } catch (e) {
     yield put(fetchSetError(e));
   }
 }
 
-function* fetchDocs() {
+function* fetchSets({query}) {
   try {
-    const searchQuery = yield select(getSearchQuery);
-    const resp = yield call(GAPI.searchDocsByName, searchQuery);
-    yield put(fetchDocsComplete(resp));
+    const token = store.get('token');
+    const userId = yield select(getUserId);
+    const resp = yield call(client.fetchSets, token, {query});
+    yield put(fetchSetsComplete(resp.data.data));
   } catch (e) {
-    yield put(fetchDocsError(e));
+    yield put(fetchSetsError(e));
   }
 }
 
+function* createSet({name, cards}) {
+  try {
+    const token = store.get('token');
+    const resp = yield call(client.createSet, token, {name, cards});
+    yield put(fetchSetsComplete(resp.data.data));
+  } catch (e) {
+    yield put(fetchSetsError(e));
+  }
+}
+
+
 function* saveStudySession() {
   try {
-    const set = yield select(getSet);
-    const cards = yield select(getCards);
-    const resp = yield call(GAPI.saveAppData, cards.toJS());
-    const updateMetaResp = yield call(GAPI.updateDocMeta, set.get('id'), resp.result.id);
-    yield put(saveStudySessionComplete(resp));
+    //const set = yield select(getSet);
+    //const cards = yield select(getCards);
+    //const resp = yield call(client.saveAppData, cards.toJS());
+    //const updateMetaResp = yield call(client.updateDocMeta, set.get('id'), resp.result.id);
+    //yield put(saveStudySessionComplete(resp));
   } catch (e) {
     yield put(saveStudySession(e));
   }
@@ -108,20 +130,24 @@ function* pollAutosave( ) {
   }
 }
 
-function* watchGoogleAuthorize() {
-  yield* takeLatest(ActionTypes.GOOGLE_USER_AUTHORIZE_START, googleAuthorize);
-}
-
-function* watchFetchDocs() {
-  yield* takeLatest(ActionTypes.FETCH_DOCS_START, fetchDocs);
+function* watchAuthorize() {
+  yield* takeLatest(ActionTypes.USER_AUTHORIZE_START, authorize);
 }
 
 function* watchFetchSet() {
   yield* takeLatest(ActionTypes.FETCH_SET_START, fetchSet);
 }
 
+function* watchFetchSets() {
+  yield* takeLatest(ActionTypes.FETCH_SETS_START, fetchSets);
+}
+
 function* watchSaveStudySession() {
   yield* takeLatest(ActionTypes.SAVE_STUDY_SESSION_START, saveStudySession);
+}
+
+function* watchSaveCard() {
+  yield* takeLatest(ActionTypes.SAVE_CARD_START, saveCard);
 }
 
 function* watchAutosavePoll() {
@@ -134,9 +160,16 @@ function* watchAutosavePoll() {
 
 export default function* root() {
   yield [
-    fork(watchFetchDocs), 
+    fork(function* watchSaveSet() {
+      yield* takeLatest(ActionTypes.SAVE_SET_START, saveSet);
+    }), 
+    fork(function* watchFetchCard() {
+      yield* takeLatest(ActionTypes.FETCH_CARD_START, fetchCard);
+    }), 
     fork(watchFetchSet), 
-    fork(watchGoogleAuthorize),
+    fork(watchFetchSets), 
+    fork(watchSaveCard), 
+    fork(watchAuthorize),
     fork(watchSaveStudySession),
     fork(watchAutosavePoll)
   ];

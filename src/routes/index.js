@@ -3,30 +3,42 @@ import { Route, IndexRoute } from 'react-router';
 import { UserAuthWrapper } from 'redux-auth-wrapper';
 import {push} from 'react-router-redux';
 
-import AppLayout from '../containers/layouts/App';
-import HomeView from '../containers/views/Home';
-import StudyView from '../containers/views/Study';
-import NotFoundView from '../containers/views/NotFound';
-import TutorialView from '../containers/views/Tutorial';
+import App from './App';
+import Dashboard from './Dashboard';
+import Landing from './Landing';
+import Study from './Study';
+import NotFound from './NotFound';
+import Tutorial from './Tutorial';
+import EditSet from './EditSet';
+import Search from './Search';
 
 const UserIsAuthenticated = UserAuthWrapper({
   authSelector: state => state.get('auth'), 
   failureRedirectPath: '/',
   redirectAction: push, 
-  predicate: user => user.get('isSignedIn'),
+  predicate: auth => auth.get('isSignedIn'),
   wrapperDisplayName: 'UserIsAuthenticated' 
 });
 
 const routes = state => {
-  return (<Route path="/" component={AppLayout}>
+  return (<Route path="/" component={App}>
             <IndexRoute 
-              component={HomeView} />
-            <Route path="sets/:documentId"
-              component={UserIsAuthenticated(StudyView)} />
+              component={Landing} />
+            <Route path="dashboard"
+              component={UserIsAuthenticated(Dashboard)}>
+              <IndexRoute
+                component={Search} />
+              <Route path="sets/:id/cards/:cardId/edit"
+                component={EditSet} />
+              <Route path="sets/:id/edit"
+                component={EditSet} />
+            </Route>
+            <Route path="study/:id"
+              component={Study} />
             <Route path="tutorial"
-              component={TutorialView} />
+              component={Tutorial} />
             <Route path="*" 
-              component={NotFoundView} />
+              component={NotFound} />
           </Route>);
 };
 export default routes;

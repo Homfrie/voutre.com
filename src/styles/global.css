@@ -1,0 +1,17 @@
+@import "./variables.css";
+@import "./fonts.css";
+@import "./reset.css";
+@import "./quill.css";
+
+body {
+  font-family: "Gandhi Sans", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  background-image: resolve('img/bg.png');
+  background-repeat: repeat;
+}
+
+a, a:hover, a:active {
+  color: black;
+  text-decoration: none;
+}

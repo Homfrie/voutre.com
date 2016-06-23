@@ -1,0 +1,45 @@
+.segment {
+  width: 100%;
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  flex-flow: row wrap;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  flex-flow: row wrap;
+  height: 40vh;
+  text-align: center;
+}
+
+.logo {
+  flex: 1 100%;
+  font-size: 3.5em;
+  font-weight: 700;
+}
+
+.leadin {
+  flex: 1 100%;
+  font-size: 3.2em;
+}
+
+.auth-docs {
+  height: 20vh;
+}
+
+.help {
+  flex: 1 100%;
+  font-size: 1.5em;
+  height: 30vh;
+  text-align: center;
+}
+
+.help a {
+  text-decoration: none;
+  border-bottom: 2px solid blue; 
+}

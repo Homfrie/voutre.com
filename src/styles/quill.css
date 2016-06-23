@@ -1,0 +1,11 @@
+:global(.quill .set-name .ql-editor > div) {
+  text-align: left;
+  font-size: 2em;
+  font-family: "Gandhi Sans", Helvetica, Arial, sans-serif;
+  letter-spacing: 0.1;
+  text-decoration: underline;
+}
+
+:global(.quill .set-name) {
+  margin: 0; padding: 0;
+}

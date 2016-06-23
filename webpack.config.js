@@ -10,7 +10,7 @@ import postcssAssets from 'postcss-assets';
 
 const CLIENT_PATH = __dirname + '/src';
 const DIST_PATH = __dirname + '/public';
-const COMPILER_PUBLIC_PATH = 'http://localhost:3005/';
+const COMPILER_PUBLIC_PATH = 'http://client.voutre.llc/';
 const ENV = process.env.NODE_ENV || 'development';
 const COMPILER_VENDOR = [
   'history',
@@ -207,7 +207,7 @@ webpackConfig.postcss = function(webpack) {
     postcssAssets({ 
       basePath: 'src/assets/',
       loadPaths: ["img/", "fonts/"],
-      baseUrl: "http://localhost:3005/assets/"
+      baseUrl: "http://client.voutre.llc/assets/"
     }),
     lost( ),
     cssnano({

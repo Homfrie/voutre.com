@@ -1,0 +1,22 @@
+.item {
+  text-decoration: none;
+  display: inline-block;
+  margin: 1px;
+  font-size: 1.04em;
+  letter-spacing: 0.05em;
+  padding: 8px 0;
+  background-color: #5D97FF;
+  transition: 0.2s;
+}
+.item a {
+  text-decoration: none;
+  color: #fff;
+  padding: 8px 16px;
+}
+
+.item:hover {
+  transform: scale(1.2);
+}
+.item:hover:active {
+  transform: scale(1); 
+}
